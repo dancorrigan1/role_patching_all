@@ -1,2 +1,9 @@
----
-...
+galaxy_info:
+  role_name: role_patching_all
+  namespace: dancorrigan1
+  author: Dan Corrigan
+  description: Role to patch Linux and Windows servers
+  license: BSD-3-Clause
+  min_ansible_version: '2.9'
+  galaxy_tags: []
+dependencies: []
