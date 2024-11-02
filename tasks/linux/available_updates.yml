@@ -46,13 +46,8 @@
       - "{{ __updatable_packages }}"
   changed_when: false
 
-- name: "Linux | Available Updates | Set flag true if updates are available"
-  ansible.builtin.set_fact:
-    __updates_available: true
-  when: ( __updatable_packages is defined ) and ( __updatable_packages | length > 0 )
-
 - name: "Linux | Available Updates | Prepare storage and save"
-  when: __updates_available | bool
+  when: (__updatable_packages is defined and __updatable_packages | length > 0 )
   block:
     - name: "Linux | Available Updates | Make stored patching directory"
       ansible.builtin.file:
