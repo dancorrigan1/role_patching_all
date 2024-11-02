@@ -1,19 +1,13 @@
 ---
-- name: Make stored patching dir
-  ansible.windows.win_file:
-    path: "{{ __patching_logs_storage }}\\{{ inventory_hostname }}"
-    state: directory
-  delegate_to: alien
-
-- name: Archive logs
+- name: "Windows | Post Upgrade | Archive logs"
   community.windows.win_zip:
-    src: "{{ __patching_temp_dir }}\\{{ inventory_hostname }}_patching"
-    dest: "{{ __patching_logs_storage }}\\{{ inventory_hostname }}\\{{ inventory_hostname }}-{{ start_time }}-patching-logs.zip"
-  delegate_to: alien
+    src: "{{ role_patching_all__windows_patching_temp_dir }}\\{{ inventory_hostname }}_patching"
+    dest: "{{ role_patching_all__windows_patching_logs_storage }}\\{{ inventory_hostname }}\\{{ inventory_hostname }}-{{ start_time }}-patching-logs.zip"
+  delegate_to: '{{ role_patching_all__windows_storage_server }}'
 
-- name: Clean up temp dir
+- name: Windows | Post Upgrade | Clean up temp dir"
   ansible.windows.win_file:
-    path: "{{ __patching_temp_dir }}\\{{ inventory_hostname }}_patching"
+    path: "{{ role_patching_all__windows_patching_temp_dir }}\\{{ inventory_hostname }}_patching"
     state: absent
-  delegate_to: alien
+  delegate_to: '{{ role_patching_all__windows_storage_server }}'
 ...

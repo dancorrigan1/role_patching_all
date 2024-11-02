@@ -5,7 +5,7 @@
 
 - name: "Linux | Main | Check for Available Updates"
   ansible.builtin.import_tasks:
-    file: available_updates.yml
+    file: linux/available_updates.yml
 
 - name: "Linux | Main | Patch Servers Block"
   when: (__updatable_packages is defined and __updatable_packages | length > 0 )
@@ -13,15 +13,13 @@
 
     - name: "Linux | Main | Get Current Packages"
       ansible.builtin.import_tasks:
-        file: current_packages.yml
+        file: linux/current_packages.yml
 
     - name: "Linux | Main | Patch Servers"
       ansible.builtin.import_tasks:
-        file: patching.yml
+        file: linux/patching.yml
 
     - name: "Linux | Main | Archive logs"
       ansible.builtin.import_tasks:
-        file: postupgrade_packages.yml
-
-
+        file: linux/postupgrade_packages.yml
 ...

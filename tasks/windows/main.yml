@@ -1,39 +1,21 @@
 ---
-- name: Set Facts
+- name: "Windows | Main | Get date and time"
   ansible.builtin.set_fact:
-    available_updates_file: available_updates
     start_time: "{{ ansible_date_time.iso8601_basic_short }}"
-  tags:
-    - checkupdates
 
 - name: Check for Available Updates
   ansible.builtin.import_tasks:
-    file: available_updates.yml
+    file: windows/available_updates.yml
 
 - name: Patch Servers
-  when: __updates_available | bool
+  when: (__updatable_packages is defined and __updatable_packages | length > 0)
   block:
-    - name: Make stored patching dir
-      ansible.windows.win_file:
-        path: "{{ __patching_logs_storage }}\\{{ inventory_hostname }}"
-        state: directory
-      delegate_to: alien
 
     - name: Patch Servers
       ansible.builtin.import_tasks:
-        file: patching.yml
+        file: windows/patching.yml
 
     - name: Archive logs
       ansible.builtin.import_tasks:
-        file: postupgrade.yml
-
-- name: Cleanup Only
-  ansible.windows.win_file:
-    path: "{{ __patching_temp_dir }}\\{{ inventory_hostname }}_patching"
-    state: absent
-  delegate_to: alien
-  tags:
-    - never
-    - cleanup
-
+        file: windows/postupgrade.yml
 ...

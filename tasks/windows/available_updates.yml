@@ -1,51 +1,46 @@
 ---
-- name: Windows
-  tags:
-    - checkupdates
-  block:
-    - name: List all updatable Packages
-      ansible.windows.win_updates:
-        category_names:
-          - SecurityUpdates
-          - CriticalUpdates
-          - UpdateRollups
-        skip_optional: true
-        state: searched
-      register: __get_updatable_packages
-      failed_when: false
-      no_log: true
+- name: "Windows | Available Updates | List all updatable Packages"
+  ansible.windows.win_updates:
+    category_names:
+      - SecurityUpdates
+      - CriticalUpdates
+      - UpdateRollups
+    skip_optional: true
+    state: searched
+  register: __get_updatable_packages
+  failed_when: false
+  no_log: true
 
-    - name: Generate list of updatable packages
-      ansible.builtin.set_fact:
-        __updatable_packages: "{{ __get_updatable_packages['filtered_updates'] | dict2items | map(attribute='value.title') | list }}"
+- name: "Windows | Available Updates | Generate list of updatable packages"
+  ansible.builtin.set_fact:
+    __updatable_packages: "{{ __get_updatable_packages['filtered_updates'] | dict2items | map(attribute='value.title') | list }}"
 
-- name: Show updatable packages
+- name: "Windows | Available Updates | Show updatable packages"
   ansible.builtin.debug:
     msg:
       - There are {{ __updatable_packages | length }} updates on {{ inventory_hostname }}
       - "{{ __updatable_packages }}"
   changed_when: false
-  tags:
-    - checkupdates
 
-- name: Set flag true if updates are available
-  ansible.builtin.set_fact:
-    __updates_available: true
-  when: ( __updatable_packages is defined ) and ( __updatable_packages | length > 0 )
-
-- name: Prepare storage and save
-  when: __updates_available | bool
+- name: "Windows | Available Updates | Prepare storage and save"
+  when: (__updatable_packages is defined and __updatable_packages | length > 0)
   block:
+    - name: "Windows | Available Updates | Make stored patching directory"
+      ansible.windows.win_file:
+        path: "{{ role_patching_all__windows_patching_logs_storage }}/{{ inventory_hostname }}"
+        state: directory
+      delegate_to: '{{ role_patching_all__windows_storage_server }}'
+
     - name: Create tmp directory
       ansible.windows.win_file:
-        path: "{{ __patching_temp_dir }}\\{{ inventory_hostname }}_patching"
+        path: "{{ role_patching_all__windows_patching_temp_dir }}\\{{ inventory_hostname }}_patching"
         state: directory
-      delegate_to: alien
+      delegate_to: '{{ role_patching_all__windows_storage_server }}'
 
     - name: Save updatable packages
       ansible.builtin.template:
-        src: "{{ available_updates_file }}.j2"
-        dest: "{{ __patching_temp_dir }}\\{{ inventory_hostname }}_patching\\{{ available_updates_file }}-{{ start_time }}.txt"
+        src: "available_updates.j2"
+        dest: "{{ role_patching_all__windows_patching_temp_dir }}\\{{ inventory_hostname }}_patching\\available_updates-{{ start_time }}.txt"
         mode: '0664'
-      delegate_to: alien
+      delegate_to: '{{ role_patching_all__windows_storage_server }}'
 ...
