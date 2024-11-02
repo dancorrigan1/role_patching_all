@@ -11,11 +11,11 @@
   when: (__updatable_packages is defined and __updatable_packages | length > 0)
   block:
 
-    - name: "Windows | Main |Patch Servers"
+    - name: "Windows | Main | Include Patching Tasks File"
       ansible.builtin.include_tasks:
         file: windows/patching.yml
 
-    - name: "Windows | Main | Archive logs"
+    - name: "Windows | Main | Include Post Upgrade Tasks File"
       ansible.builtin.include_tasks:
         file: windows/postupgrade.yml
 ...
