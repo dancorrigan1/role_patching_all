@@ -8,7 +8,6 @@
     skip_optional: true
     state: installed
     reject_list: '{{ role_patching_all__windows_reject_list | default(omit) }}'
-  register: __get_updatable_packages
   failed_when: false
   no_log: true
 ...
