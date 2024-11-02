@@ -8,7 +8,7 @@
         dpkg_options: 'force-confdef'
         update_cache: true
         only_upgrade: true
-        upgrade: "{{ 'dist' if role_patching__dist_upgrade | bool else 'yes' }}"
+        upgrade: '{% if role_patching__dist_upgrade | bool %}dist{% else %}yes{% endif %}'
       register: __perform_upgrade
       changed_when: __perform_upgrade != 0
       no_log: true
