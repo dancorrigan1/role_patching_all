@@ -8,7 +8,7 @@
     file: available_updates.yml
 
 - name: "Linux | Main | Patch Servers Block"
-  when: __updates_available | bool
+  when: (__updatable_packages is defined and __updatable_packages | length > 0 )
   block:
 
     - name: "Linux | Main | Get Current Packages"
