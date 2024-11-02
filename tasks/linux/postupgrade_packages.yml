@@ -10,8 +10,8 @@
 
 - name: "Linux | Postupgrade | Save post install installed packages"
   ansible.builtin.template:
-    src: "postupgrade_packages_file.j2"
-    dest: '{{ role_patching_all__linux_temp_dir }}/{{ inventory_hostname }}_patching/postupgrade_packages_file-{{ start_time }}.txt'
+    src: "postupgrade_packages.j2"
+    dest: '{{ role_patching_all__linux_temp_dir }}/{{ inventory_hostname }}_patching/postupgrade_packages-{{ start_time }}.txt'
     mode: '0664'
   delegate_to: '{{ role_patching_all__linux_storage_server }}'
 
