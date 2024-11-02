@@ -11,7 +11,7 @@
 - name: "Linux | Current Packages | Save currently installed packages"
   ansible.builtin.template:
     src: "current_packages_file.j2"
-    dest: '{{ role_patching_all__linuux_temp_dir }}/{{ inventory_hostname }}_patching/current_packages_file-{{ start_time }}.txt'
+    dest: '{{ role_patching_all__linux_temp_dir }}/{{ inventory_hostname }}_patching/current_packages_file-{{ start_time }}.txt'
     mode: '0664'
   delegate_to: '{{ role_patching_all__linux_storage_server }}'
 

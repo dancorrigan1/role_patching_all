@@ -60,7 +60,7 @@
 
     - name: "Linux | Available Updates | Create tmp directory"
       ansible.builtin.file:
-        path: '{{ role_patching_all__linuux_temp_dir }}/{{ inventory_hostname }}_patching'
+        path: '{{ role_patching_all__linux_temp_dir }}/{{ inventory_hostname }}_patching'
         state: directory
         mode: '0770'
         owner: root
@@ -70,7 +70,7 @@
     - name: "Linux | Available Updates | Save available updates"
       ansible.builtin.template:
         src: "available_updates_file.j2"
-        dest: '{{ role_patching_all__linuux_temp_dir }}/{{ inventory_hostname }}_patching/available_updates_file-{{ start_time }}.txt'
+        dest: '{{ role_patching_all__linux_temp_dir }}/{{ inventory_hostname }}_patching/available_updates_file-{{ start_time }}.txt'
         mode: '0664'
       delegate_to: '{{ role_patching_all__linux_storage_server }}'
 ...
