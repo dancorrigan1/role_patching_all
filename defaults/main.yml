@@ -4,9 +4,6 @@ role_patching_all__linux_dist_upgrade: false
 role_patching_all__linux_updates_available: false
 role_patching_all__linux_patching_logs_storage: '/patching-logs'
 role_patching_all__linux_storage_server: 'linux'
-role_patching_all__linux_current_packages_file: current_packages
-role_patching_all__linux_available_updates_file: available_updates
-role_patching_all__linux_postupgrade_packages_file: postupgrade_packages
 role_patching_all__linuux_temp_dir: '/tmp'
 
 # Windows
