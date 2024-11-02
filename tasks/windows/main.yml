@@ -3,19 +3,19 @@
   ansible.builtin.set_fact:
     start_time: "{{ ansible_date_time.iso8601_basic_short }}"
 
-- name: Check for Available Updates
-  ansible.builtin.import_tasks:
+- name: "Windows | Main | Check for Available Updates"
+  ansible.builtin.include_tasks:
     file: windows/available_updates.yml
 
-- name: Patch Servers
+- name: "Windows | Main | Patch Servers Block"
   when: (__updatable_packages is defined and __updatable_packages | length > 0)
   block:
 
-    - name: Patch Servers
-      ansible.builtin.import_tasks:
+    - name: "Windows | Main |Patch Servers"
+      ansible.builtin.include_tasks:
         file: windows/patching.yml
 
-    - name: Archive logs
-      ansible.builtin.import_tasks:
+    - name: "Windows | Main | Archive logs"
+      ansible.builtin.include_tasks:
         file: windows/postupgrade.yml
 ...

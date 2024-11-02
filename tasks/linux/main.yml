@@ -4,7 +4,7 @@
     start_time: "{{ ansible_date_time.iso8601_basic_short }}"
 
 - name: "Linux | Main | Check for Available Updates"
-  ansible.builtin.import_tasks:
+  ansible.builtin.include_tasks:
     file: linux/available_updates.yml
 
 - name: "Linux | Main | Patch Servers Block"
@@ -12,14 +12,14 @@
   block:
 
     - name: "Linux | Main | Get Current Packages"
-      ansible.builtin.import_tasks:
+      ansible.builtin.include_tasks:
         file: linux/current_packages.yml
 
     - name: "Linux | Main | Patch Servers"
-      ansible.builtin.import_tasks:
+      ansible.builtin.include_tasks:
         file: linux/patching.yml
 
     - name: "Linux | Main | Archive logs"
-      ansible.builtin.import_tasks:
+      ansible.builtin.include_tasks:
         file: linux/postupgrade_packages.yml
 ...
