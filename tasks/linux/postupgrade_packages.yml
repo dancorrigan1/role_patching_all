@@ -1,0 +1,33 @@
+---
+- name: "Linux | Postupgrade | Gather Package facts"
+  ansible.builtin.package_facts:
+    manager: auto
+  register: __package_facts
+
+- name: "Linux | Postupgrade | Create Packages list"
+  ansible.builtin.set_fact:
+    __currently_installed_packages: "{{ __package_facts.ansible_facts.packages }}"
+
+- name: "Linux | Postupgrade | Save post install installed packages"
+  ansible.builtin.template:
+    src: "postupgrade_packages_file.j2"
+    dest: '{{ role_patching_all__linuux_temp_dir }}/{{ inventory_hostname }}_patching/postupgrade_packages_file-{{ start_time }}.txt'
+    mode: '0664'
+  delegate_to: '{{ role_patching_all__linux_storage_server }}'
+
+- name: "Linux | Postupgrade | Archive logs"
+  community.general.archive:
+    path: '{{ role_patching_all__linuux_temp_dir }}/{{ inventory_hostname }}_patching'
+    dest: "{{ role_patching_all__linux_patching_logs_storage }}/{{ inventory_hostname }}/{{ inventory_hostname }}-{{ start_time }}-patching-logs.tar.gz"
+    remove: true
+    mode: '0660'
+    owner: root
+    group: master
+  delegate_to: '{{ role_patching_all__linux_storage_server }}'
+
+- name: "Linux | Postupgrade | Cleanup tmp"
+  ansible.builtin.file:
+    path: '{{ role_patching_all__linuux_temp_dir }}/{{ inventory_hostname }}_patching'
+    state: absent
+  delegate_to: '{{ role_patching_all__linux_storage_server }}'
+...

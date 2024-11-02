@@ -1,0 +1,19 @@
+---
+- name: Install updatable Packages
+  ansible.windows.win_updates:
+    category_names:
+      - SecurityUpdates
+      - CriticalUpdates
+      - UpdateRollups
+    skip_optional: true
+    state: installed
+    reject_list:
+      - "Razer Inc - HIDClass - 12/1/2013 12:00:00 AM - 6.2.9200.16430"
+      - "Realtek Semiconductor Corp. - MEDIA - 9/5/2017 12:00:00 AM - 6.0.1.8248"
+      - "Intel - Other hardware - Intel® Ready Mode Technology Device"
+      - "Rivet Networks LLC - SoftwareComponent - 3/8/2019 12:00:00 AM - 2.0.2369.0"
+      - "INTEL - System - 7/18/1968 12:00:00 AM - 10.1.6.2"
+  register: __get_updatable_packages
+  failed_when: false
+  no_log: true
+...

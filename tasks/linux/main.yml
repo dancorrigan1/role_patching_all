@@ -1,0 +1,27 @@
+---
+- name: "Linux | Main | Get date and time"
+  ansible.builtin.set_fact:
+    start_time: "{{ ansible_date_time.iso8601_basic_short }}"
+
+- name: "Linux | Main | Check for Available Updates"
+  ansible.builtin.import_tasks:
+    file: available_updates.yml
+
+- name: "Linux | Main | Patch Servers Block"
+  when: __updates_available | bool
+  block:
+
+    - name: "Linux | Main | Get Current Packages"
+      ansible.builtin.import_tasks:
+        file: current_packages.yml
+
+    - name: "Linux | Main | Patch Servers"
+      ansible.builtin.import_tasks:
+        file: patching.yml
+
+    - name: "Linux | Main | Archive logs"
+      ansible.builtin.import_tasks:
+        file: postupgrade_packages.yml
+
+
+...

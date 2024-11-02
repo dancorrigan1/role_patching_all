@@ -1,0 +1,38 @@
+---
+- name: "Linux | Patching | Ubuntu Block"
+  when: ansible_distribution == "Ubuntu"
+  block:
+    - name: "Linux | Patching | Perform upgrade | Ubuntu"
+      ansible.builtin.apt:
+        state: latest
+        dpkg_options: 'force-confdef'
+        update_cache: true
+        only_upgrade: true
+        upgrade: "{{ 'dist' if role_patching__dist_upgrade | bool else 'yes' }}"
+      register: __perform_upgrade
+      changed_when: __perform_upgrade != 0
+      no_log: true
+
+    - name: "Linux | Patching | Apt autoremove | Ubuntu"
+      ansible.builtin.apt:
+        autoremove: true
+      no_log: true
+
+- name: "Linux | Patching | CentOS"
+  when: ansible_distribution == "CentOS"
+  block:
+    - name: Perform upgrade | CentOS
+      ansible.builtin.dnf:
+        name: '*'
+        state: latest
+        update_cache: true
+        update_only: true
+      register: __perform_upgrade
+      changed_when: __perform_upgrade != 0
+      no_log: true
+
+    - name: "Linux | Patching | Autoremove | CentOS"
+      ansible.builtin.dnf:
+        autoremove: true
+      no_log: true
+...

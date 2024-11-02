@@ -1,0 +1,5 @@
+# List of {{ __updatable_packages | length }} Available Updates on {{ inventory_hostname }} for {{ start_time }}
+
+{% for package in __updatable_packages %}
+{{ package }}
+{% endfor %}

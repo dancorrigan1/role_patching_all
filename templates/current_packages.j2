@@ -1,0 +1,12 @@
+# List of Current Packages on {{ inventory_hostname }} for {{ start_time }}
+ I
+{% for package_name, package_data in __currently_installed_packages.items() %}
+{% for package_detail in package_data %}
+Name: {{ package_detail['name'] }}
+Version: {{ package_detail['version'] }}
+{% if ansible_distribution == 'Ubuntu' %}
+Category: {{ package_detail['category'] }}
+{% endif %}
+
+{% endfor %}
+{% endfor %}

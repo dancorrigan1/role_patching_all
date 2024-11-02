@@ -1,0 +1,18 @@
+---
+- name: "Linux | Current Packages | Gather Package facts"
+  ansible.builtin.package_facts:
+    manager: auto
+  register: __package_facts
+
+- name: "Linux | Current Packages | Create Packages list"
+  ansible.builtin.set_fact:
+    __currently_installed_packages: "{{ __package_facts.ansible_facts.packages }}"
+
+- name: "Linux | Current Packages | Save currently installed packages"
+  ansible.builtin.template:
+    src: "current_packages_file.j2"
+    dest: '{{ role_patching_all__linuux_temp_dir }}/{{ inventory_hostname }}_patching/current_packages_file-{{ start_time }}.txt'
+    mode: '0664'
+  delegate_to: '{{ role_patching_all__linux_storage_server }}'
+
+...

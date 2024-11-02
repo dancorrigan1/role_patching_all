@@ -1,0 +1,81 @@
+---
+- name: "Linux | Available Updates | Ubuntu"
+  when: ansible_distribution == 'Ubuntu'
+  block:
+    - name: Update Cache | Ubuntu
+      ansible.builtin.package:
+        update_cache: true
+      changed_when: false
+
+    - name: "Linux | Available Updates | List all updatable packages | Ubuntu"
+      ansible.builtin.shell:
+        cmd: >
+          ( apt list --upgradable 2>/dev/null )
+      register: __get_updatable_packages
+      changed_when: __get_updatable_packages.stdout_lines | length > 1
+      failed_when: false
+      no_log: true
+
+    - name: "Linux | Available Updates | Generate list of updatable packages | Ubuntu"
+      ansible.builtin.set_fact:
+        __updatable_packages: "{{ __get_updatable_packages.stdout_lines | reject('match', 'Listing...') }}"
+
+- name: "Linux | Available Updates | CentOS"
+  when: ansible_distribution == 'CentOS'
+  block:
+    - name: "Linux | Available Updates | List all updatable Packages | CentOS"
+      ansible.builtin.package:
+        name: '*'
+        state: latest
+        update_cache: true
+        update_only: true
+      check_mode: true
+      register: __get_updatable_packages
+      changed_when: __get_updatable_packages.results | select('regex', '^Installed.*') | map('regex_replace', '(Installed":" )', '') | list | length > 1
+      failed_when: false
+      no_log: true
+
+    - name: "Linux | Available Updates | Generate list of updatable packages | CentOS"
+      ansible.builtin.set_fact:
+        __updatable_packages: "{{ __get_updatable_packages.results | select('regex', '^Installed.*') | map('regex_replace', '(Installed: )', '') | list }}"
+
+- name: "Linux | Available Updates | Show updatable packages"
+  ansible.builtin.debug:
+    msg:
+      - There are {{ __updatable_packages | length }} updates on {{ inventory_hostname }}
+      - "{{ __updatable_packages }}"
+  changed_when: false
+
+- name: "Linux | Available Updates | Set flag true if updates are available"
+  ansible.builtin.set_fact:
+    __updates_available: true
+  when: ( __updatable_packages is defined ) and ( __updatable_packages | length > 0 )
+
+- name: "Linux | Available Updates | Prepare storage and save"
+  when: __updates_available | bool
+  block:
+    - name: "Linux | Available Updates | Make stored patching directory"
+      ansible.builtin.file:
+        path: "{{ role_patching_all__linux_patching_logs_storage }}/{{ inventory_hostname }}"
+        state: directory
+        mode: '0770'
+        owner: root
+        group: master
+      delegate_to: '{{ role_patching_all__linux_storage_server }}'
+
+    - name: "Linux | Available Updates | Create tmp directory"
+      ansible.builtin.file:
+        path: '{{ role_patching_all__linuux_temp_dir }}/{{ inventory_hostname }}_patching'
+        state: directory
+        mode: '0770'
+        owner: root
+        group: master
+      delegate_to: '{{ role_patching_all__linux_storage_server }}'
+
+    - name: "Linux | Available Updates | Save available updates"
+      ansible.builtin.template:
+        src: "available_updates_file.j2"
+        dest: '{{ role_patching_all__linuux_temp_dir }}/{{ inventory_hostname }}_patching/available_updates_file-{{ start_time }}.txt'
+        mode: '0664'
+      delegate_to: '{{ role_patching_all__linux_storage_server }}'
+...
