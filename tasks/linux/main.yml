@@ -18,7 +18,7 @@
     - name: "Linux | Main | Include VMware Snapshot Tasks File"
       ansible.builtin.include_tasks:
         file: vmware_snapshot.yml
-      when: config.name is defined
+      when: vmware_guest_name is defined
 
     - name: "Linux | Main | Include Patching Tasks File"
       ansible.builtin.include_tasks:
