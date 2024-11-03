@@ -1,0 +1,30 @@
+---
+- name: "VMware Snapshot | Find VM folder and datacenter"
+  community.vmware.vmware_guest_find:
+    hostname: '{{ vcenter_hostname }}'
+    username: '{{ vcenter_username }}'
+    password: '{{ vcenter_password }}'
+    validate_certs: false
+    name: '{{ vmware_guest_name }}'
+  delegate_to: localhost
+  register: __vm_find_results
+
+- name: "VMware Snapshot |Set VM folder and datacenter"
+  ansible.builtin.set_fact:
+    __folder: "{{ __vm_find_results.folders[0] }}"
+    __datacenter: "{{ __vm_find_results.folders[0].split('/')[1] }}"
+
+- name: "VMware Snapshot |Take Snapshot of VM"
+  community.vmware.vmware_guest_snapshot:
+    hostname: '{{ vcenter_hostname }}'
+    username: '{{ vcenter_username }}'
+    password: '{{ vcenter_password }}'
+    validate_certs: false
+    datacenter: '{{ __datacenter }}'
+    folder: '{{ __folder }}'
+    name: '{{ vmware_guest_name }}'
+    state: present
+    snapshot_name: "snapshot-{{ now(utc=false, fmt='%Y-%m-%d_%H-%M') }}"
+    description: "snapshot-{{ now(utc=false, fmt='%Y-%m-%d_%H-%M') }}"
+  delegate_to: localhost
+...

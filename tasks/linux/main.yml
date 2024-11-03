@@ -15,6 +15,11 @@
       ansible.builtin.include_tasks:
         file: linux/current_packages.yml
 
+    - name: "Linux | Main | Include VMware Snapshot Tasks File"
+      ansible.builtin.include_tasks:
+        file: vmware_snapshot.yml
+      when: config.name is defined
+
     - name: "Linux | Main | Include Patching Tasks File"
       ansible.builtin.include_tasks:
         file: linux/patching.yml
