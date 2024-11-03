@@ -8,6 +8,7 @@
     name: '{{ vmware_guest_name }}'
   delegate_to: localhost
   register: __vm_find_results
+  become: false
 
 - name: "VMware Snapshot |Set VM folder and datacenter"
   ansible.builtin.set_fact:
@@ -27,4 +28,5 @@
     snapshot_name: "snapshot-{{ now(utc=false, fmt='%Y-%m-%d_%H-%M') }}"
     description: "snapshot-{{ now(utc=false, fmt='%Y-%m-%d_%H-%M') }}"
   delegate_to: localhost
+  become: false
 ...
