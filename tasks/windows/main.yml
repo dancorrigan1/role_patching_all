@@ -11,6 +11,11 @@
   when: (__updatable_packages is defined and __updatable_packages | length > 0)
   block:
 
+    - name: "Windows | Main | Include VMware Snapshot Tasks File"
+      ansible.builtin.include_tasks:
+        file: vmware_snapshot.yml
+      when: vmware_guest_name is defined
+
     - name: "Windows | Main | Include Patching Tasks File"
       ansible.builtin.include_tasks:
         file: windows/patching.yml
