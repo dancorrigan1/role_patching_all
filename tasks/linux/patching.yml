@@ -10,7 +10,7 @@
         only_upgrade: true
         upgrade: '{% if role_patching__dist_upgrade | bool %}dist{% else %}yes{% endif %}'
       register: __perform_upgrade
-      changed_when: __perform_upgrade.rc != 0
+      # changed_when: __perform_upgrade.rc != 0
       # no_log: true
 
     - name: "Linux | Patching | Apt autoremove | Ubuntu"
@@ -28,7 +28,7 @@
         update_cache: true
         update_only: true
       register: __perform_upgrade
-      changed_when: __perform_upgrade != 0
+      # changed_when: __perform_upgrade != 0
       no_log: true
 
     - name: "Linux | Patching | Autoremove | CentOS"
