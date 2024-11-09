@@ -11,7 +11,7 @@
         upgrade: '{% if role_patching__dist_upgrade | bool %}dist{% else %}yes{% endif %}'
       register: __perform_upgrade
       changed_when: __perform_upgrade.rc != 0
-      no_log: true
+      # no_log: true
 
     - name: "Linux | Patching | Apt autoremove | Ubuntu"
       ansible.builtin.apt:
@@ -34,5 +34,5 @@
     - name: "Linux | Patching | Autoremove | CentOS"
       ansible.builtin.dnf:
         autoremove: true
-      no_log: true
+      # no_log: true
 ...
