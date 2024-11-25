@@ -1,10 +1,6 @@
 ---
 - name: "VMware Snapshot | Take Snapshot of VM"
   community.vmware.vmware_guest_snapshot:
-    hostname: '{{ vcenter_hostname }}'
-    username: '{{ vcenter_username }}'
-    password: '{{ vcenter_password }}'
-    validate_certs: false
     datacenter: '{{ vmware_guest_folder }}'
     folder: '{{ vmware_guest_folder }}'
     name: '{{ vmware_guest_name }}'
