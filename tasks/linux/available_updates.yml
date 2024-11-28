@@ -48,6 +48,7 @@
 
 - name: "Linux | Available Updates | Prepare storage and save"
   when: (__updatable_packages is defined and __updatable_packages | length > 0 )
+  tags: patch
   block:
     - name: "Linux | Available Updates | Make stored patching directory"
       ansible.builtin.file:
