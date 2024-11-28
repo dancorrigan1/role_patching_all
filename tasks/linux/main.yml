@@ -6,9 +6,11 @@
 - name: "Linux | Main | Check for Available Updates"
   ansible.builtin.include_tasks:
     file: linux/available_updates.yml
+  tags: always
 
 - name: "Linux | Main | Patch Servers Block"
   when: (__updatable_packages is defined and __updatable_packages | length > 0 )
+  tags: patch
   block:
 
     - name: "Linux | Main | Include Current Packages Tasks File"
