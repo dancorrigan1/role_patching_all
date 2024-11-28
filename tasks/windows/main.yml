@@ -1,26 +1,31 @@
 ---
-- name: "Windows | Main | Get date and time"
-  ansible.builtin.set_fact:
-    start_time: "{{ ansible_date_time.iso8601_basic_short }}"
-
 - name: "Windows | Main | Check for Available Updates"
   ansible.builtin.include_tasks:
     file: windows/available_updates.yml
+    apply:
+      tags: always
+  tags: always
 
 - name: "Windows | Main | Patch Servers Block"
   when: (__updatable_packages is defined and __updatable_packages | length > 0)
+  tags: patch
   block:
-
     - name: "Windows | Main | Include VMware Snapshot Tasks File"
       ansible.builtin.include_tasks:
         file: vmware_snapshot.yml
+        apply:
+          tags: patch
       when: vmware_guest_name is defined
 
     - name: "Windows | Main | Include Patching Tasks File"
       ansible.builtin.include_tasks:
+        apply:
+          tags: patch
         file: windows/patching.yml
 
     - name: "Windows | Main | Include Post Upgrade Tasks File"
       ansible.builtin.include_tasks:
+        apply:
+          tags: patch
         file: windows/postupgrade.yml
 ...
