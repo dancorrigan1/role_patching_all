@@ -3,9 +3,11 @@
   ansible.builtin.include_tasks:
     file: 'linux/main.yml'
   when: ansible_connection == 'ssh'
+  tags: always
 
 - name: "Main | Include windows main task file"
   ansible.builtin.include_tasks:
     file: 'windows/main.yml'
   when: ansible_connection == 'winrm'
+  tags: always
 ...
