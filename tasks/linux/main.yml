@@ -7,29 +7,36 @@
 - name: "Linux | Main | Check for Available Updates"
   ansible.builtin.include_tasks:
     file: linux/available_updates.yml
-  tags:
-    - always
-    - list
+    apply:
+      tags: always
+  tags: always
 
 - name: "Linux | Main | Patch Servers Block"
   when: (__updatable_packages is defined and __updatable_packages | length > 0 )
   tags: patch
   block:
-
     - name: "Linux | Main | Include Current Packages Tasks File"
       ansible.builtin.include_tasks:
         file: linux/current_packages.yml
+        apply:
+          tags: patch
 
     - name: "Linux | Main | Include VMware Snapshot Tasks File"
       ansible.builtin.include_tasks:
         file: vmware_snapshot.yml
+        apply:
+          tags: patch
       when: vmware_guest_name is defined
 
     - name: "Linux | Main | Include Patching Tasks File"
       ansible.builtin.include_tasks:
         file: linux/patching.yml
+        apply:
+          tags: patch
 
     - name: "Linux | Main | Include Post Upgrade Tasks File"
       ansible.builtin.include_tasks:
         file: linux/postupgrade_packages.yml
+        apply:
+          tags: patch
 ...
