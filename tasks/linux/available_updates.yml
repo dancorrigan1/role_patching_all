@@ -1,13 +1,13 @@
 ---
-- name: "Linux | Available Updates | Ubuntu"
-  when: ansible_distribution == 'Ubuntu'
+- name: "Linux | Available Updates | Ubuntu/Debian"
+  when: ansible_distribution is match (Ubuntu|Debian)
   block:
-    - name: Update Cache | Ubuntu
+    - name: Update Cache | Ubuntu/Debian
       ansible.builtin.package:
         update_cache: true
       changed_when: false
 
-    - name: "Linux | Available Updates | List all updatable packages | Ubuntu"
+    - name: "Linux | Available Updates | List all updatable packages | Ubuntu/Debian"
       ansible.builtin.shell:
         cmd: >
           ( apt list --upgradable 2>/dev/null )
@@ -16,7 +16,7 @@
       failed_when: false
       no_log: true
 
-    - name: "Linux | Available Updates | Generate list of updatable packages | Ubuntu"
+    - name: "Linux | Available Updates | Generate list of updatable packages | Ubuntu/Debian"
       ansible.builtin.set_fact:
         __updatable_packages: "{{ __get_updatable_packages.stdout_lines | reject('match', 'Listing...') }}"
 

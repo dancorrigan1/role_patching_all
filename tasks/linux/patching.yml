@@ -1,8 +1,8 @@
 ---
-- name: "Linux | Patching | Ubuntu Block"
-  when: ansible_distribution == "Ubuntu"
+- name: "Linux | Patching | Ubuntu/Debian Block"
+  when: ansible_distribution is match (Ubuntu|Debian)
   block:
-    - name: "Linux | Patching | Perform upgrade | Ubuntu"
+    - name: "Linux | Patching | Perform upgrade | Ubuntu/Debian"
       ansible.builtin.apt:
         state: latest
         dpkg_options: 'force-confdef'
@@ -13,7 +13,7 @@
       # changed_when: __perform_upgrade.rc != 0
       # no_log: true
 
-    - name: "Linux | Patching | Apt autoremove | Ubuntu"
+    - name: "Linux | Patching | Apt autoremove | Ubuntu/Debian"
       ansible.builtin.apt:
         autoremove: true
       no_log: true
