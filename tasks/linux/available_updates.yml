@@ -1,6 +1,6 @@
 ---
 - name: "Linux | Available Updates | Ubuntu/Debian"
-  when: ansible_distribution is match (Ubuntu|Debian)
+  when: ansible_distribution is search('Ubuntu|Debian')
   block:
     - name: Update Cache | Ubuntu/Debian
       ansible.builtin.package:
