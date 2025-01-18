@@ -1,4 +1,9 @@
 ---
+- name: Install proxmoxer
+  ansible.builtin.pip:
+    name: proxmoxer
+    state: present
+    
 - name: Create snapshot for each VM
   community.general.proxmox_snap:
     api_host: "{{ url }}"
@@ -9,4 +14,5 @@
     vmid: '{{ proxmox_vmid }}'
     state: present
     snapname: "snapshot-{{ now(utc=false, fmt='%Y-%m-%d_%H-%M') }}"
+  delegate_to: localhost
 ...
