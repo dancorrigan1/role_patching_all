@@ -1,9 +1,4 @@
 ---
-- name: Install proxmoxer
-  ansible.builtin.pip:
-    name: proxmoxer
-    state: present
-    
 - name: Create snapshot for each VM
   community.general.proxmox_snap:
     api_host: "{{ url }}"
