@@ -10,4 +10,5 @@
     state: present
     snapname: "snapshot-{{ now(utc=false, fmt='%Y-%m-%d_%H-%M') }}"
   delegate_to: localhost
+  become: false
 ...
