@@ -2,6 +2,7 @@
 - name: Create snapshot for each VM
   community.general.proxmox_snap:
     api_host: "{{ url }}"
+    api_user: awx@pve
     api_token_id: "{{ token_id }}"
     api_token_secret: "{{ token_secret }}"
     validate_certs: false
