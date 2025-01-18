@@ -8,5 +8,5 @@
     validate_certs: false
     vmid: '{{ proxmox_vmid }}'
     state: present
-    snapshot: "snapshot-{{ now(utc=false, fmt='%Y-%m-%d_%H-%M') }}"
+    snapname: "snapshot-{{ now(utc=false, fmt='%Y-%m-%d_%H-%M') }}"
 ...
