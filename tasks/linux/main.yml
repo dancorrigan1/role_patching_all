@@ -21,7 +21,7 @@
         file: proxmox_snapshot.yml
         apply:
           tags: patch
-      when: vmware_guest_name is defined
+      when: proxmox_vmtype is defined
     
     - meta: end_play
 
