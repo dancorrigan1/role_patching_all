@@ -1,14 +1,11 @@
 ---
 - name: Create snapshot for each VM
-  community.general.proxmox:
-    api_user: root@pam
+  community.general.proxmox_snap:
     api_host: "{{ url }}"
     api_token_id: "{{ token_id }}"
     api_token_secret: "{{ token_secret }}"
     validate_certs: false
-    endpoint: "/nodes/{{ proxmox_node }}/qemu/{{ proxmox_vmid }}/snapshot"
-    method: POST
-    args:
-      snapname: "snapshot-{{ now(utc=false, fmt='%Y-%m-%d_%H-%M') }}"
-      description: "snapshot-{{ now(utc=false, fmt='%Y-%m-%d_%H-%M') }}"
+    vmid: '{{ proxmox_vmid }}'
+    state: present
+    snapshot: "snapshot-{{ now(utc=false, fmt='%Y-%m-%d_%H-%M') }}"
 ...
