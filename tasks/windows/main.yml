@@ -10,9 +10,9 @@
   when: (__updatable_packages is defined and __updatable_packages | length > 0)
   tags: patch
   block:
-    - name: "Windows | Main | Include VMware Snapshot Tasks File"
+    - name: "Windows | Main | Include Proxmox Snapshot Tasks File"
       ansible.builtin.include_tasks:
-        file: vmware_snapshot.yml
+        file: proxmox_snapshot.yml
         apply:
           tags: patch
       when: vmware_guest_name is defined
