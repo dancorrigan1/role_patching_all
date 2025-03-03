@@ -1,7 +1,7 @@
 ---
 - name: Create snapshot for each VM
   community.general.proxmox_snap:
-    api_host: "{{ proxmox_node }}"
+    api_host: "{{ __proxmox_node }}"
     api_user: awx@pve
     api_token_id: "{{ token_id }}"
     api_token_secret: "{{ token_secret }}"
@@ -12,4 +12,6 @@
     snapname: "snapshot-{{ now(utc=false, fmt='%Y-%m-%d_%H-%M') }}"
   delegate_to: localhost
   become: false
+  vars:
+    __proxmox_node: "{% if proxmox_node == 'pmox1' %}192.168.1.110{% elif proxmox_node == 'pmox2' %}{% else %}{{ proxmox_node }}{% endif %}"
 ...
