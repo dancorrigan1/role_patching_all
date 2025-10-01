@@ -13,5 +13,5 @@
   delegate_to: localhost
   become: false
   vars:
-    __proxmox_node: "{% if proxmox_node == 'pmox1' %}192.168.1.110{% elif proxmox_node == 'pmox2' %}{% else %}{{ proxmox_node }}{% endif %}"
+    __proxmox_node: "{% if proxmox_node == 'pmox1' %}192.168.1.110{% elif proxmox_node == 'pmox2' %}192.168.1.111{% else %}{{ proxmox_node }}{% endif %}"
 ...
