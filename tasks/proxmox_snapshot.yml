@@ -1,4 +1,34 @@
 ---
+- name: Proxmox Snapshot | Get LXC config when target is a container
+  ansible.builtin.uri:
+    url: "https://{{ __proxmox_node }}:8006/api2/json/nodes/{{ proxmox_node }}/lxc/{{ proxmox_vmid }}/config"
+    method: GET
+    validate_certs: false
+    status_code:
+      - 200
+      - 404
+    headers:
+      Authorization: "PVEAPIToken=awx@pve!{{ token_id }}={{ token_secret }}"
+  register: proxmox_lxc_config
+  delegate_to: localhost
+  become: false
+  vars:
+    __proxmox_node: "{% if proxmox_node == 'pmox1' %}192.168.1.110{% elif proxmox_node == 'pmox2' %}192.168.1.111{% else %}{{ proxmox_node }}{% endif %}"
+
+- name: Proxmox Snapshot | Decide if snapshot should be skipped
+  ansible.builtin.set_fact:
+    proxmox_skip_snapshot: >-
+      {{
+        (proxmox_lxc_config.status == 200) and
+        (
+          proxmox_lxc_config.json.data
+          | dict2items
+          | selectattr('key', 'match', '^mp[0-9]+$')
+          | list
+          | length > 0
+        )
+      }}
+
 - name: Create snapshot for each VM
   community.general.proxmox_snap:
     api_host: "{{ __proxmox_node }}"
@@ -12,6 +42,14 @@
     snapname: "snapshot-{{ now(utc=false, fmt='%Y-%m-%d_%H-%M') }}"
   delegate_to: localhost
   become: false
+  when: not (proxmox_skip_snapshot | default(false))
   vars:
     __proxmox_node: "{% if proxmox_node == 'pmox1' %}192.168.1.110{% elif proxmox_node == 'pmox2' %}192.168.1.111{% else %}{{ proxmox_node }}{% endif %}"
+
+- name: Proxmox Snapshot | Skip reason
+  ansible.builtin.debug:
+    msg: >-
+      Skipping snapshot for LXC {{ proxmox_vmid }} on {{ proxmox_node }}
+      because bind mount entries (mp*) were detected.
+  when: proxmox_skip_snapshot | default(false)
 ...
