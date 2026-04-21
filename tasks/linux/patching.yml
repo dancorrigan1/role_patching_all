@@ -1,6 +1,6 @@
 ---
 - name: "Linux | Patching | Ubuntu/Debian Block"
-  when: ansible_distribution is search('Ubuntu|Debian')
+  when: ansible_facts.distribution is search('Ubuntu|Debian')
   block:
     - name: "Linux | Patching | Perform upgrade | Ubuntu/Debian"
       ansible.builtin.apt:
@@ -8,7 +8,7 @@
         dpkg_options: 'force-confdef'
         update_cache: true
         only_upgrade: true
-        upgrade: '{% if role_patching__dist_upgrade | bool %}dist{% else %}yes{% endif %}'
+        upgrade: '{% if role_patching_all__linux_dist_upgrade | bool %}dist{% else %}yes{% endif %}'
       register: __perform_upgrade
       # changed_when: __perform_upgrade.rc != 0
       # no_log: true
@@ -19,7 +19,7 @@
       no_log: true
 
 - name: "Linux | Patching | CentOS"
-  when: ansible_distribution == "CentOS"
+  when: ansible_facts.distribution == "CentOS"
   block:
     - name: Perform upgrade | CentOS
       ansible.builtin.dnf:

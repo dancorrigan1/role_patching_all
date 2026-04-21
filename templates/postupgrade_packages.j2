@@ -4,7 +4,7 @@
 {% for package_detail in package_data %}
 Name: {{ package_detail['name'] }}
 Version: {{ package_detail['version'] }}
-{% if ansible_distribution == 'Ubuntu' %}
+{% if ansible_facts.distribution == 'Ubuntu' %}
 Category: {{ package_detail['category'] }}
 {% endif %}
 

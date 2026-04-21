@@ -1,7 +1,28 @@
 ---
+- name: Proxmox Snapshot | Validate required variables
+  ansible.builtin.assert:
+    that:
+      - proxmox_node is defined
+      - proxmox_vmid is defined
+      - proxmox_vmtype is defined
+      - token_id is defined
+      - token_secret is defined
+    fail_msg: "Required vars: proxmox_node, proxmox_vmid, proxmox_vmtype, token_id, token_secret."
+
+- name: Proxmox Snapshot | Set API host
+  ansible.builtin.set_fact:
+    __proxmox_api_host: >-
+      {% if proxmox_node == 'pmox1' %}
+      192.168.1.110
+      {% elif proxmox_node == 'pmox2' %}
+      192.168.1.111
+      {% else %}
+      {{ proxmox_node }}
+      {% endif %}
+
 - name: Proxmox Snapshot | Get LXC config when target is a container
   ansible.builtin.uri:
-    url: "https://{{ __proxmox_node }}:8006/api2/json/nodes/{{ proxmox_node }}/lxc/{{ proxmox_vmid }}/config"
+    url: "https://{{ __proxmox_api_host | trim }}:8006/api2/json/nodes/{{ proxmox_node }}/lxc/{{ proxmox_vmid }}/config"
     method: GET
     validate_certs: false
     status_code:
@@ -12,8 +33,7 @@
   register: proxmox_lxc_config
   delegate_to: localhost
   become: false
-  vars:
-    __proxmox_node: "{% if proxmox_node == 'pmox1' %}192.168.1.110{% elif proxmox_node == 'pmox2' %}192.168.1.111{% else %}{{ proxmox_node }}{% endif %}"
+  when: proxmox_vmtype == 'lxc'
 
 - name: Proxmox Snapshot | Decide if snapshot should be skipped
   ansible.builtin.set_fact:
@@ -28,10 +48,11 @@
           | length > 0
         )
       }}
+  when: proxmox_vmtype == 'lxc'
 
 - name: Create snapshot for each VM
   community.general.proxmox_snap:
-    api_host: "{{ __proxmox_node }}"
+    api_host: "{{ __proxmox_api_host | trim }}"
     api_user: awx@pve
     api_token_id: "{{ token_id }}"
     api_token_secret: "{{ token_secret }}"
@@ -43,8 +64,6 @@
   delegate_to: localhost
   become: false
   when: not (proxmox_skip_snapshot | default(false))
-  vars:
-    __proxmox_node: "{% if proxmox_node == 'pmox1' %}192.168.1.110{% elif proxmox_node == 'pmox2' %}192.168.1.111{% else %}{{ proxmox_node }}{% endif %}"
 
 - name: Proxmox Snapshot | Skip reason
   ansible.builtin.debug:

@@ -1,6 +1,6 @@
 ---
 - name: "Linux | Available Updates | Ubuntu/Debian"
-  when: ansible_distribution is search('Ubuntu|Debian')
+  when: ansible_facts.distribution is search('Ubuntu|Debian')
   block:
     - name: Update Cache | Ubuntu/Debian
       ansible.builtin.package:
@@ -21,7 +21,7 @@
         __updatable_packages: "{{ __get_updatable_packages.stdout_lines | reject('match', 'Listing...') }}"
 
 - name: "Linux | Available Updates | CentOS"
-  when: ansible_distribution == 'CentOS'
+  when: ansible_facts.distribution == 'CentOS'
   block:
     - name: "Linux | Available Updates | List all updatable Packages | CentOS"
       ansible.builtin.package:

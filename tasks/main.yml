@@ -1,7 +1,7 @@
 ---
 - name: "Main | Get date and time"
   ansible.builtin.set_fact:
-    start_time: "{{ ansible_date_time.iso8601_basic_short }}"
+    start_time: "{{ ansible_facts.date_time.iso8601_basic_short }}"
   tags: always
 
 - name: "Main | Include linux main task file"
