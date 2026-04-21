@@ -15,7 +15,7 @@
       {% if proxmox_node == 'pmox1' %}
       192.168.1.110
       {% elif proxmox_node == 'pmox2' %}
-      192.168.1.111
+      192.168.1.109
       {% else %}
       {{ proxmox_node }}
       {% endif %}
